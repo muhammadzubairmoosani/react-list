@@ -1,23 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+// import logo from "./logo.svg";
+import "./App.css";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [list, setList] = useState([]);
+  const [toggle, setToggle] = useState("");
+
+  const fetchList = async () => {
+    try {
+      const listJson = await fetch(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+      const res = await listJson.json();
+
+      setList(res.slice(0, 10));
+      console.log(res.slice(0, 10));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchList();
+  }, []);
+
+  const isActive = (id) => toggle === id;
+
+  const onClickActive = (id) => {
+    if (id === toggle) {
+      setToggle("");
+    } else {
+      setToggle(id);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {list.map((item) => (
+        <div key={item.id}>
+          <button
+            class={`accordion ${isActive(item.id) ? "active" : ""}`}
+            onClick={() => onClickActive(item.id)}
+          >
+            {item.title}
+          </button>
+          <div
+            class="panel"
+            style={{ display: isActive(item.id) ? "block" : "" }}
+          >
+            <p>{item.body}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
