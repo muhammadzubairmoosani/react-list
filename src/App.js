@@ -14,7 +14,6 @@ function App() {
       const res = await listJson.json();
 
       setList(res.slice(0, 10));
-      console.log(res.slice(0, 10));
     } catch (error) {
       console.log(error);
     }
